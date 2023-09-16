@@ -59,6 +59,72 @@ The following table summarizes the per-platform performance statistics of sample
     - [Isaac ROS Troubleshooting](#isaac-ros-troubleshooting)
     - [Deep Learning Troubleshooting](#deep-learning-troubleshooting)
   - [Updates](#updates)
+ 
+## Install on Ubuntu 22.04
+1. Install VPI:
+   ```bash
+   sudo apt install gnupg
+   sudo apt-key adv --fetch-key https://repo.download.nvidia.com/jetson/jetson-ota-public.asc
+   sudo apt install software-properties-common
+   sudo add-apt-repository 'deb https://repo.download.nvidia.com/jetson/x86_64/focal r35.2 main'
+   sudo apt update
+   sudo apt install libnvvpi2 vpi2-dev vpi2-samples
+   sudo apt install vpi2-demos
+   ```
+3. Clone this repository and its dependencies under `~/isaac_ros_pose_estimation_ws/src`.
+
+    ```bash
+    cd ~/isaac_ros_pose_estimation_ws/src
+    ```
+
+    ```bash
+    git clone https://github.com/NVIDIA-ISAAC-ROS/isaac_ros_common
+    ```
+
+    ```bash
+    git clone https://github.com/NVIDIA-ISAAC-ROS/isaac_ros_nitros
+    ```
+
+    ```bash
+    git clone https://github.com/NVIDIA-ISAAC-ROS/isaac_ros_pose_estimation
+    ```
+
+    ```bash
+    git clone https://github.com/NVIDIA-ISAAC-ROS/isaac_ros_dnn_inference
+    ```
+
+    ```bash
+    git clone https://github.com/NVIDIA-ISAAC-ROS/isaac_ros_image_pipeline
+    ```
+
+    ```bash
+    git clone https://github.com/osrf/negotiated.git
+    ```
+Extract the directories of negotiated directory inside ~/isaac_ros_pose_estimation_ws/src and change the package.xml inside isaac_ros_nitros. Add this 2 lines:
+```
+<depend>negotiated</depend>
+<depend>negotiated_interfaces</depend>
+```
+3. Build the workspace.
+    ```bash
+    cd ~/isaac_ros_pose_estimation_ws
+    colcon build
+    ```
+    
+4. To successfully build the repo, you need git lfs. Here is how you want to install it.
+    ```bash
+    sudo apt install git-lfs
+    git lfs install
+    # Fetch LFS Objects. This will download the actual large files and replace the LFS pointers with them.
+    cd ~/isaac_ros_pose_estimation_ws/src/isaac_ros_nitros
+    git lfs pull
+
+    # rebuild your workspace:
+    cd ~/isaac_ros_pose_estimation_ws/
+    rm -rf build/isaac_ros_gxf install/isaac_ros_gxf
+    colcon build --packages-select isaac_ros_gxf
+    ```
+
 
 ## Latest Update
 
