@@ -2,64 +2,6 @@
 
 <div align="center"><img src="https://github.com/NVlabs/Deep_Object_Pose/raw/master/dope_objects.png" width="400px"/></div>
 
-## Overview
-
-Isaac ROS Pose Estimation contains ROS 2 packages to predict the pose of an object. `isaac_ros_dope` provides a pose estimation method using 3D bounding cuboid dimensions of a known object in an input image. `isaac_ros_centerpose` provides a pose estimation method using 3D bounding cuboid dimensions of unknown object instances in a known category of objects from an input image. `isaac_ros_dope` and `isaac_ros_centerpose` use GPU acceleration for DNN inference to estimate the pose of an object. The output prediction can be used by perception functions when fusing with a corresponding depth to provide the 3D pose of an object and distance for navigation or manipulation.
-
-<div align="center"><img src="resources/isaac_ros_pose_estimation_nodegraph.png" width="500px"/></div>
-
-`isaac_ros_dope` is used in a graph of nodes to estimate the pose of a known object with 3D bounding cuboid dimensions. To produce the estimate, a [DOPE](https://github.com/NVlabs/Deep_Object_Pose) (Deep Object Pose Estimation) pre-trained model is required. Input images may need to be cropped and resized to maintain the aspect ratio and match the input resolution of DOPE. After DOPE has produced an estimate, the DNN decoder will use the specified object type to transform using belief maps to output object poses.
-
-NVLabs has provided a DOPE pre-trained model using the [HOPE](https://github.com/swtyree/hope-dataset) dataset. HOPE stands for household objects for pose estimation and is a research-oriented dataset using toy grocery objects and 3D textured meshes of the objects for training on synthetic data. To use DOPE for other objects that are relevant to your application, it needs to be trained with another dataset targeting these objects. For example, DOPE has been trained to detect dollies for use with a mobile robot that navigates under, lifts, and moves that type of dolly.
-
-`isaac_ros_centerpose` has similarities to `isaac_ros_dope` in that both estimate an object pose; however, `isaac_ros_centerpose` provides additional functionality. The [CenterPose](https://github.com/NVlabs/CenterPose) DNN performs object detection on the image, generates 2D keypoints for the object, estimates the 6-DoF pose, and regresses relative 3D bounding cuboid dimensions. This is performed on a known object class without knowing the instance--for example, detecting a chair without having trained on images of all chairs. NVLabs has provided pre-trained models for the CenterPose model; however, as with the DOPE model, it needs to be trained with another dataset targeting objects that are specific to your application.  
-
-Pose estimation is a compute-intensive task and not performed at the frame rate of an input camera. To make efficient use of resources, object pose is estimated for a single frame and used as an input to navigation. Additional object pose estimates are computed to further refine navigation in progress at a lower frequency than the input rate of a typical camera.
-
-Packages in this repository rely on accelerated DNN model inference using [Triton](https://github.com/triton-inference-server/server) or [TensorRT](https://developer.nvidia.com/tensorrt) from [Isaac ROS DNN Inference](https://github.com/NVIDIA-ISAAC-ROS/isaac_ros_dnn_inference).
-
-## Performance
-
-The following table summarizes the per-platform performance statistics of sample graphs that use this package, with links included to the full benchmark output. These benchmark configurations are taken from the [Isaac ROS Benchmark](https://github.com/NVIDIA-ISAAC-ROS/isaac_ros_benchmark#list-of-isaac-ros-benchmarks) collection, based on the [`ros2_benchmark`](https://github.com/NVIDIA-ISAAC-ROS/ros2_benchmark) framework.
-
-| Sample Graph                                                                                                                                         | Input Size | AGX Orin                                                                                                                                        | Orin NX                                                                                                                                        | Orin Nano 8GB                                                                                                                                         | x86_64 w/ RTX 4060 Ti                                                                                                                             |
-| ---------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
-| [DOPE Pose Estimation Graph](https://github.com/NVIDIA-ISAAC-ROS/isaac_ros_benchmark/blob/main/scripts//isaac_ros_dope_graph.py)             | VGA        | [40.5 fps](https://github.com/NVIDIA-ISAAC-ROS/isaac_ros_benchmark/blob/main/results/isaac_ros_dope_graph-agx_orin.json)<br>31 ms       | [17.6 fps](https://github.com/NVIDIA-ISAAC-ROS/isaac_ros_benchmark/blob/main/results/isaac_ros_dope_graph-orin_nx.json)<br>120 ms      | --                                                                                                                                                    | [90.9 fps](https://github.com/NVIDIA-ISAAC-ROS/isaac_ros_benchmark/blob/main/results/isaac_ros_dope_graph-nuc_4060ti.json)<br>14 ms       |
-| [Centerpose Pose Estimation Graph](https://github.com/NVIDIA-ISAAC-ROS/isaac_ros_benchmark/blob/main/scripts//isaac_ros_centerpose_graph.py) | VGA        | [50.2 fps](https://github.com/NVIDIA-ISAAC-ROS/isaac_ros_benchmark/blob/main/results/isaac_ros_centerpose_graph-agx_orin.json)<br>37 ms | [23.7 fps](https://github.com/NVIDIA-ISAAC-ROS/isaac_ros_benchmark/blob/main/results/isaac_ros_centerpose_graph-orin_nx.json)<br>70 ms | [18.4 fps](https://github.com/NVIDIA-ISAAC-ROS/isaac_ros_benchmark/blob/main/results/isaac_ros_centerpose_graph-orin_nano_emul.json)<br>87 ms | [45.0 fps](https://github.com/NVIDIA-ISAAC-ROS/isaac_ros_benchmark/blob/main/results/isaac_ros_centerpose_graph-nuc_4060ti.json)<br>21 ms |
-
-## Table of Contents
-
-- [Isaac ROS Pose Estimation](#isaac-ros-pose-estimation)
-  - [Overview](#overview)
-  - [Performance](#performance)
-  - [Table of Contents](#table-of-contents)
-  - [Latest Update](#latest-update)
-  - [Supported Platforms](#supported-platforms)
-    - [Docker](#docker)
-  - [Quickstart](#quickstart)
-  - [Next Steps](#next-steps)
-    - [Try More Examples](#try-more-examples)
-    - [Use Different Models](#use-different-models)
-    - [Customize your Dev Environment](#customize-your-dev-environment)
-  - [Package Reference](#package-reference)
-    - [`isaac_ros_dope`](#isaac_ros_dope)
-      - [Usage](#usage)
-      - [ROS Parameters](#ros-parameters)
-      - [Configuration File](#configuration-file)
-      - [ROS Topics Subscribed](#ros-topics-subscribed)
-      - [ROS Topics Published](#ros-topics-published)
-    - [`isaac_ros_centerpose`](#isaac_ros_centerpose)
-      - [Usage](#usage-1)
-      - [ROS Parameters](#ros-parameters-1)
-      - [Configuration File](#configuration-file-1)
-      - [ROS Topics Subscribed](#ros-topics-subscribed-1)
-      - [ROS Topics Published](#ros-topics-published-1)
-      - [CenterPose Network Output](#centerpose-network-output)
-  - [Troubleshooting](#troubleshooting)
-    - [Isaac ROS Troubleshooting](#isaac-ros-troubleshooting)
-    - [Deep Learning Troubleshooting](#deep-learning-troubleshooting)
-  - [Updates](#updates)
- 
 ## Install on Ubuntu 22.04
 1. Install VPI:
    ```bash
@@ -171,21 +113,6 @@ export LD_LIBRARY_PATH=~/TensorRT-8.6.1.6/lib:/usr/local/cuda-11.7/lib64${LD_LIB
     sudo apt install nlohmann-json3-dev
     ```
 
-## Latest Update
-
-Update 2023-05-25: Performance improvements.
-
-## Supported Platforms
-
-This package is designed and tested to be compatible with ROS 2 Humble running on [Jetson](https://developer.nvidia.com/embedded-computing) or an x86_64 system with an NVIDIA GPU.
-
-> **Note**: Versions of ROS 2 earlier than Humble are **not** supported. This package depends on specific ROS 2 implementation features that were only introduced beginning with the Humble release.
-
-| Platform | Hardware                                                                                                                                                                                                 | Software                                                                                                           | Notes                                                                                                                                                                                   |
-| -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Jetson   | [Jetson Orin](https://www.nvidia.com/en-us/autonomous-machines/embedded-systems/jetson-orin/) <br> [Jetson Xavier](https://www.nvidia.com/en-us/autonomous-machines/embedded-systems/jetson-agx-xavier/) | [JetPack 5.1.1](https://developer.nvidia.com/embedded/jetpack)                                                     | For best performance, ensure that [power settings](https://docs.nvidia.com/jetson/archives/r34.1/DeveloperGuide/text/SD/PlatformPowerAndPerformance.html) are configured appropriately. |
-| x86_64   | NVIDIA GPU                                                                                                                                                                                               | [Ubuntu 20.04+](https://releases.ubuntu.com/20.04/) <br> [CUDA 11.8+](https://developer.nvidia.com/cuda-downloads) |
-
 ### Docker
 
 To simplify development, we strongly recommend leveraging the Isaac ROS Dev Docker images by following [these steps](https://github.com/NVIDIA-ISAAC-ROS/isaac_ros_common/blob/main/docs/dev-env-setup.md). This will streamline your development environment setup with the correct versions of dependencies on both Jetson and x86_64 platforms.
@@ -245,7 +172,7 @@ To simplify development, we strongly recommend leveraging the Isaac ROS Dev Dock
 
 6. Select a DOPE model by visiting the DOPE model collection available on the official [DOPE GitHub](https://github.com/NVlabs/Deep_Object_Pose) repository [here](https://drive.google.com/open?id=1DfoA3m_Bm0fW8tOWXGVxi4ETlLEAgmcg). The model is assumed to be downloaded to `~/Downloads` outside the Docker container.
 
-   This example will use `Ketchup.pth`, which should be downloaded into `/tmp/models` inside the Docker container:
+   This example will use `Ketchup.pth` and `TomatoSauce.pth`, which should be downloaded into `/tmp/models` inside the Docker container:
     > **Note**: this should be run outside the Docker container
 
     On `x86_64`:
@@ -253,6 +180,7 @@ To simplify development, we strongly recommend leveraging the Isaac ROS Dev Dock
     ```bash
     cd ~/Downloads && \
     docker cp Ketchup.pth isaac_ros_dev-x86_64-container:/tmp/models
+    docker cp TomatoSauce.pth isaac_ros_dev-x86_64-container:/tmp/models
     ```
 
 7. Convert the PyTorch file into an ONNX file:
@@ -260,6 +188,7 @@ To simplify development, we strongly recommend leveraging the Isaac ROS Dev Dock
 
     ```bash
     python3 /workspaces/isaac_ros-dev/src/isaac_ros_pose_estimation/isaac_ros_dope/scripts/dope_converter.py --format onnx --input /tmp/models/Ketchup.pth
+    python3 /workspaces/isaac_ros-dev/src/isaac_ros_pose_estimation/isaac_ros_dope/scripts/dope_converter.py --format onnx --input /tmp/models/TomatoSauce.pth
     ```
 
     If you are planning on using Jetson, copy the generated `.onnx` model into the Jetson, and then copy it over into `aarch64` Docker container.
@@ -269,7 +198,6 @@ To simplify development, we strongly recommend leveraging the Isaac ROS Dev Dock
     Enter the Docker container in Jetson:
 
     ```bash
-    cd ~/workspaces/isaac_ros-dev/src/isaac_ros_common && \
       ./scripts/run_dev.sh
     ```
 
@@ -283,7 +211,8 @@ To simplify development, we strongly recommend leveraging the Isaac ROS Dev Dock
 
     ```bash
     cd ~/Downloads && \
-    docker cp Ketchup.onnx isaac_ros_dev-aarch64-container:/tmp/models
+    docker cp Ketchup.onnx isaac_ros_dev-x86_64-container:/tmp/models
+    docker cp TomatoSauce.onnx isaac_ros_dev-x86_64-container:/tmp/models
     ```
 
 8. Inside the container, build and source the workspace:
@@ -305,13 +234,15 @@ To simplify development, we strongly recommend leveraging the Isaac ROS Dev Dock
     Launch `isaac_ros_dope`:
 
     ```bash
+    ## For Ketchup
     ros2 launch isaac_ros_dope isaac_ros_dope_tensor_rt.launch.py model_file_path:=/tmp/models/Ketchup.onnx engine_file_path:=/tmp/models/Ketchup.plan
+    ## For TomatoSauce
+    ros2 launch isaac_ros_dope isaac_ros_dope_tensor_rt.launch.py model_file_path:=/tmp/models/TomatoSauce.onnx engine_file_path:=/tmp/models/TomatoSauce.plan
     ```
 
     Then open **another** terminal, and enter the Docker container again:
 
     ```bash
-    cd ~/workspaces/isaac_ros-dev/src/isaac_ros_common && \
       ./scripts/run_dev.sh
     ```
 
@@ -326,11 +257,7 @@ To simplify development, we strongly recommend leveraging the Isaac ROS Dev Dock
     In a **third** terminal, enter the Docker container again:
 
     ```bash
-    cd ~/workspaces/isaac_ros-dev/src/isaac_ros_common && \
-      ./scripts/run_dev.sh
-    ```
-
-    ```bash
+    ./scripts/run_dev.sh
     ros2 topic echo /poses
     ```
 
@@ -339,6 +266,7 @@ To simplify development, we strongly recommend leveraging the Isaac ROS Dev Dock
     Now visualize the pose array in rviz2:
 
     ```bash
+    ./scripts/run_dev.sh
     rviz2
     ```
 
