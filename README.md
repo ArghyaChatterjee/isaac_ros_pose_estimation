@@ -132,12 +132,12 @@ dpkg -l | grep TensorRT
 It should show: No such file or directory. 
 ### Binary Installation:
 Go to this website: https://developer.nvidia.com/nvidia-tensorrt-7x-download & download "Tar File Install Packages For Linux x86". Put the file to your home directory after download. Now open a new terminal to extract TensorRT from tar file:
- ```
- tar -xzvf TensorRT-7.0.0.11.Ubuntu-18.04.x86_64-gnu.cuda-10.2.cudnn7.6.tar.gz
- cd ~/TensorRT-7.0.0.11/
+ ```bash
+ tar -xzvf TensorRT-8.6.1.6.Linux.x86_64-gnu.cuda-11.8.tar.gz
+ cd ~/TensorRT-8.6.1.6/
  ```
  Now install TensorRT from wheel files to use python examples. If you want to use TensorRT with python 3.6 (cp36), execute the following commands one by one:
- ```
+ ```bash
  cd python 
  sudo -H python3 -m pip install tensorrt-7.0.0.11-cp36-none-linux_x86_64.whl
  cd ..
@@ -149,21 +149,21 @@ Go to this website: https://developer.nvidia.com/nvidia-tensorrt-7x-download & d
  cd ~
  ```
  Now, navigate to the tensorrt library directory to see the symlinks. Run the following command: 
- ```
- cd ~/TensorRT-7.0.0.11/lib
+ ```bash
+ cd ~/TensorRT-TensorRT-8.6.1.6/lib
  ls -lha libnvinfer*
  ```
-You can see libnvinfer.so, libnvinfer.so.7, libnvinfer_plugin.so & libnvinfer_plugin.so.7 are symlinks. Then check whether the link directories have been successfully configured & updated in the cache from the terminal or not. In the same terminal, run: 
-```
+You can see libnvinfer.so, libnvinfer.so.8, libnvinfer_plugin.so & libnvinfer_plugin.so.8 are symlinks. Then check whether the link directories have been successfully configured & updated in the cache from the terminal or not. In the same terminal, run: 
+```bash
 sudo ldconfig
 cd ~
 ```
 You should not get any error.
 ### Post Installation:
-Just prepend ~/TensorRT-7.0.0.11/lib directory to system dynamic link libraries path list. Don't forget to save the file.
-```
-export PATH=/usr/local/cuda-10.2/bin${PATH:+:${PATH}}
-export LD_LIBRARY_PATH=~/TensorRT-7.0.0.11/lib:/usr/local/cuda-10.2/lib64${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
+Just prepend ~/TensorRT-TensorRT-8.6.1.6/lib directory to system dynamic link libraries path list. Don't forget to save the file.
+```bash
+export PATH=/usr/local/cuda-11.7/bin${PATH:+:${PATH}}
+export LD_LIBRARY_PATH=~/TensorRT-8.6.1.6/lib:/usr/local/cuda-11.7/lib64${LD_LIBRARY_PATH:+:${LD_LIBRARY_PATH}}
 ```
 
 6. Install nlohmann-json:
