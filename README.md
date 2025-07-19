@@ -1,8 +1,14 @@
 # Isaac ROS Pose Estimation
 
 Deep learned, NVIDIA-accelerated 3D object pose estimation
+# Isaac ROS Pose Estimation
 
-<div align="center"><a class="reference internal image-reference" href="https://media.githubusercontent.com/media/NVIDIA-ISAAC-ROS/.github/main/resources/isaac_ros_docs/repositories_and_packages/isaac_ros_pose_estimation/dope_objects.png/"><img alt="image" src="https://media.githubusercontent.com/media/NVIDIA-ISAAC-ROS/.github/main/resources/isaac_ros_docs/repositories_and_packages/isaac_ros_pose_estimation/dope_objects.png/" width="400px"/></a></div>
+<p align="center">
+  <a href="https://www.youtube.com/watch?v=cKs1fthLB_k" target="_blank">
+    <img src="media/isaac_ros_foundationpose.gif" alt="Video Thumbnail" width="80%">
+  </a>
+</p>
+
 
 ## Overview
 
