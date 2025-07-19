@@ -4,7 +4,7 @@ Deep learned, NVIDIA-accelerated 3D object pose estimation
 
 <p align="center">
   <a href="https://www.youtube.com/watch?v=cKs1fthLB_k" target="_blank">
-    <img src="media/isaac_ros_foundationpose.gif" alt="Video Thumbnail" width="80%">
+    <img src="resources/isaac_ros_foundationpose.gif" alt="Video Thumbnail" width="80%">
   </a>
 </p>
 
@@ -20,13 +20,6 @@ three ROS 2 packages to predict the pose of an object. Please refer the followin
 | `isaac_ros_dope`           | x                             | x             | Fastest | Good      | Time-tested |
 | `isaac_ros_centerpose`     | x                             | ✓             | Faster  | Better    | Established |
 
-# Isaac ROS Pose Estimation
-
-<p align="center">
-  <a href="https://www.youtube.com/watch?v=cKs1fthLB_k" target="_blank">
-    <img src="media/isaac_ros_foundationpose.gif" alt="Video Thumbnail" width="80%">
-  </a>
-</p>
 
 ## Requiremetns
 This work has been tested on Ubuntu 22.04, Nvidia RTX 4070, Cuda 12.1 and Python 3.10.
