@@ -1,10 +1,10 @@
 # Isaac ROS Pose Estimation
 
-Deep learned, NVIDIA-accelerated 3D object pose estimation
+Deep learned, NVIDIA-accelerated 3D object pose estimation.
 
 <p align="center">
   <a href="https://www.youtube.com/watch?v=cKs1fthLB_k" target="_blank">
-    <img src="resources/isaac_ros_foundationpose.gif" alt="Video Thumbnail" width="80%">
+    <img src="resources/isaac_ros_foundationpose.png" alt="Video Thumbnail" width="80%">
   </a>
 </p>
 
